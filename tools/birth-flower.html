@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Birth Flower Finder | LeoFlora.art</title>
+
+  <meta
+    name="description"
+    content="Discover your birth flower by month, its symbolism, personality traits, colors and meaning with the LeoFlora Birth Flower Finder."
+  >
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <style>
+    .tool-page {
+      padding: 90px 0 110px;
+    }
+
+    .tool-hero {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 60px;
+    }
+
+    .tool-hero h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.05;
+      color: var(--forest);
+    }
+
+    .tool-hero h1 span {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .tool-hero p {
+      max-width: 650px;
+      margin: 22px auto 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .finder-layout {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    .finder-panel,
+    .result-panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 34px;
+    }
+
+    .finder-panel h2,
+    .result-panel h2 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+
+    .finder-panel > p {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .month-btn {
+      padding: 12px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--cream);
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--forest);
+      transition: .2s ease;
+    }
+
+    .month-btn:hover,
+    .month-btn.active {
+      background: var(--forest);
+      color: #fff;
+      border-color: var(--forest);
+    }
+
+    .result-placeholder {
+      min-height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      border-radius: 22px;
+      padding: 30px;
+    }
+
+    .result-card {
+      display: none;
+    }
+
+    .result-card.show {
+      display: block;
+    }
+
+    .result-top {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .flower-icon-large {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 4rem;
+      background: var(--cream);
+      flex-shrink: 0;
+    }
+
+    .result-month {
+      color: var(--gold);
+      font-size: .75rem;
+      letter-spacing: .16em;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .result-name {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 2.4rem;
+      line-height: 1.1;
+      margin-top: 5px;
+    }
+
+    .result-meaning {
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .result-section {
+      padding-top: 26px;
+    }
+
+    .result-section h3 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .result-section p {
+      color: var(--muted);
+    }
+
+    .trait-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .trait {
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: var(--sage);
+      color: var(--forest);
+      font-size: .85rem;
+      font-weight: 600;
+    }
+
+    .color-list {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .color-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: .83rem;
+    }
+
+    .color-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-top: 28px;
+    }
+
+    .copy-btn {
+      background: var(--forest);
+      color: #fff;
+    }
+
+    .secondary-btn {
+      background: var(--cream);
+      color: var(--forest);
+      border: 1px solid var(--border);
+    }
+
+    .info-section {
+      padding: 100px 0;
+      background: #fff;
+    }
+
+    .info-content {
+      max-width: 820px;
+      margin: auto;
+    }
+
+    .info-content h2 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 2.4rem;
+      margin-bottom: 18px;
+    }
+
+    .info-content h3 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 1.45rem;
+      margin-top: 34px;
+      margin-bottom: 10px;
+    }
+
+    .info-content p {
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 850px) {
+      .finder-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .month-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .finder-panel,
+      .result-panel {
+        padding: 22px;
+      }
+
+      .result-top {
+        align-items: flex-start;
+      }
+
+      .flower-icon-large {
+        width: 82px;
+        height: 82px;
+        font-size: 3rem;
+      }
+
+      .result-name {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="container nav">
+
+    <a href="../index.html" class="logo">
+      LeoFlora<span>.art</span>
+    </a>
+
+    <nav id="menu">
+      <a href="../index.html#flowers">Flower Meanings</a>
+      <a href="../index.html#tools">Discover</a>
+      <a href="../index.html#birth">Birth Flowers</a>
+      <a href="../index.html#guides">Guides</a>
+    </nav>
+
+    <button id="menuButton" class="menu-button" aria-label="Open menu">
+      ☰
+    </button>
+
+  </div>
+</header>
+
+
+<main>
+
+<section class="tool-page">
+
+  <div class="container">
+
+    <div class="tool-hero">
+
+      <p class="eyebrow">BIRTH FLOWER FINDER</p>
+
+      <h1>
+        Discover the flower
+        <span>connected to your month.</span>
+      </h1>
+
+      <p>
+        Choose your birth month to explore its traditional flower,
+        symbolism, personality traits and botanical colors.
+      </p>
+
+    </div>
+
+
+    <div class="finder-layout">
+
+      <div class="finder-panel">
+
+        <h2>Select your month</h2>
+
+        <p>
+          Choose your birth month below to reveal your flower.
+        </p>
+
+        <div class="month-grid" id="monthGrid">
+
+          <button class="month-btn" data-month="january">January</button>
+          <button class="month-btn" data-month="february">February</button>
+          <button class="month-btn" data-month="march">March</button>
+          <button class="month-btn" data-month="april">April</button>
+          <button class="month-btn" data-month="may">May</button>
+          <button class="month-btn" data-month="june">June</button>
+          <button class="month-btn" data-month="july">July</button>
+          <button class="month-btn" data-month="august">August</button>
+          <button class="month-btn" data-month="september">September</button>
+          <button class="month-btn" data-month="october">October</button>
+          <button class="month-btn" data-month="november">November</button>
+          <button class="month-btn" data-month="december">December</button>
+
+        </div>
+
+      </div>
+
+
+      <div class="result-panel">
+
+        <div class="result-placeholder" id="resultPlaceholder">
+          <div>
+            <div style="font-size:4rem;margin-bottom:15px;">🌿</div>
+            <strong style="color:var(--forest);font-size:1.2rem;">
+              Your flower is waiting
+            </strong>
+            <p style="margin-top:8px;">
+              Select a month to reveal your birth flower and its meaning.
+            </p>
+          </div>
+        </div>
+
+
+        <div class="result-card" id="resultCard">
+
+          <div class="result-top">
+
+            <div class="flower-icon-large" id="flowerIcon"></div>
+
+            <div>
+              <div class="result-month" id="resultMonth"></div>
+              <div class="result-name" id="flowerName"></div>
+              <div class="result-meaning" id="flowerMeaning"></div>
+            </div>
+
+          </div>
+
+
+          <div class="result-section">
+            <h3>Symbolism</h3>
+            <p id="flowerSymbolism"></p>
+          </div>
+
+
+          <div class="result-section">
+            <h3>Personality traits</h3>
+            <div class="trait-list" id="traitList"></div>
+          </div>
+
+
+          <div class="result-section">
+            <h3>Botanical colors</h3>
+            <div class="color-list" id="colorList"></div>
+          </div>
+
+
+          <div class="result-section">
+            <h3>Why this flower?</h3>
+            <p id="flowerWhy"></p>
+          </div>
+
+
+          <div class="result-actions">
+
+            <button class="button copy-btn" id="copyResult">
+              Copy My Result
+            </button>
+
+            <button class="button secondary-btn" id="resetResult">
+              Choose Another Month
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="info-section">
+
+  <div class="container info-content">
+
+    <p class="eyebrow">THE LANGUAGE OF FLOWERS</p>
+
+    <h2>What is a birth flower?</h2>
+
+    <p>
+      Birth flowers are flowers traditionally associated with each month
+      of the year. Like birthstones, they are often used to represent
+      personal qualities, seasonal themes and meaningful sentiments.
+    </p>
+
+    <p>
+      Different traditions can sometimes associate more than one flower
+      with a month. LeoFlora presents commonly recognized birth flowers
+      while explaining their symbolism in an easy-to-explore format.
+    </p>
+
+    <h3>Can a month have more than one birth flower?</h3>
+
+    <p>
+      Yes. Botanical traditions have developed across different places and
+      periods, so some months are associated with multiple flowers.
+      This finder focuses on one widely recognized flower for each month.
+    </p>
+
+    <h3>How can I use my birth flower?</h3>
+
+    <p>
+      Birth flowers can inspire birthday gifts, bouquets, artwork,
+      wallpapers, wedding details, personal color palettes and meaningful
+      messages for someone special.
+    </p>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+  <div class="container footer-grid">
+
+    <div>
+      <a href="../index.html" class="logo footer-logo">
+        LeoFlora<span>.art</span>
+      </a>
+
+      <p>
+        Discover the meaning, symbolism and beauty behind every flower.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <a href="../about.html">About</a>
+      <a href="../contact.html">Contact</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="../terms.html">Terms</a>
+      <a href="../licensing.html">Licensing</a>
+    </div>
+
+  </div>
+
+  <div class="copyright">
+    © 2026 LeoFlora.art. All rights reserved.
+  </div>
+
+</footer>
+
+
+<script>
+const data = {
+
+  january: {
+    month: "January",
+    flower: "Carnation",
+    icon: "🌸",
+    meaning: "Devotion, admiration and affection",
+    symbolism:
+      "Carnations are traditionally associated with lasting affection, loyalty and heartfelt admiration.",
+    traits: ["Loyal", "Dependable", "Warm", "Determined"],
+    colors: [
+      ["Soft Pink", "#E7B7B2"],
+      ["Ivory", "#F4EFE4"],
+      ["Leaf Green", "#879B7A"]
+    ],
+    why:
+      "Carnations bloom with resilience and lasting beauty, making them a fitting symbol for the strength and devotion often associated with the beginning of the year."
+  },
+
+  february: {
+    month: "February",
+    flower: "Violet",
+    icon: "💜",
+    meaning: "Faithfulness, humility and wisdom",
+    symbolism:
+      "Violets have long represented modesty, loyalty and quiet affection.",
+    traits: ["Thoughtful", "Loyal", "Intuitive", "Gentle"],
+    colors: [
+      ["Violet", "#76528B"],
+      ["Lavender", "#C7B1D5"],
+      ["Soft Green", "#93A889"]
+    ],
+    why:
+      "The violet's understated beauty reflects quiet strength and sincerity, making it a meaningful flower for February."
+  },
+
+  march: {
+    month: "March",
+    flower: "Daffodil",
+    icon: "🌼",
+    meaning: "Renewal, hope and new beginnings",
+    symbolism:
+      "Daffodils are among the earliest spring flowers and are widely associated with renewal, optimism and fresh starts.",
+    traits: ["Optimistic", "Energetic", "Hopeful", "Creative"],
+    colors: [
+      ["Daffodil Yellow", "#F3C84B"],
+      ["Cream", "#F8F2D8"],
+      ["Spring Green", "#8FA66A"]
+    ],
+    why:
+      "March marks the transition toward spring in many regions, and the daffodil perfectly captures that sense of returning light and new possibility."
+  },
+
+  april: {
+    month: "April",
+    flower: "Daisy",
+    icon: "🌼",
+    meaning: "Purity, joy and fresh beginnings",
+    symbolism:
+      "Daisies symbolize simplicity, innocence and cheerful new beginnings.",
+    traits: ["Cheerful", "Honest", "Playful", "Positive"],
+    colors: [
+      ["White", "#F7F5EF"],
+      ["Golden Yellow", "#E9BC42"],
+      ["Meadow Green", "#799268"]
+    ],
+    why:
+      "The daisy's clean form and bright center reflect the fresh, youthful energy traditionally associated with springtime."
+  },
+
+  may: {
+    month: "May",
+    flower: "Lily of the Valley",
+    icon: "🤍",
+    meaning: "Happiness, sweetness and humility",
+    symbolism:
+      "Lily of the valley is traditionally associated with returning happiness, gentleness and heartfelt sincerity.",
+    traits: ["Kind", "Calm", "Graceful", "Compassionate"],
+    colors: [
+      ["Pearl White", "#F5F4ED"],
+      ["Soft Sage", "#B7C4AC"],
+      ["Forest Green", "#536B52"]
+    ],
+    why:
+      "Its delicate white bells and fresh spring growth make lily of the valley a symbol of quiet beauty and renewed happiness."
+  },
+
+  june: {
+    month: "June",
+    flower: "Rose",
+    icon: "🌹",
+    meaning: "Love, beauty and devotion",
+    symbolism:
+      "Roses are among the world's most recognizable symbols of love, appreciation and emotional connection.",
+    traits: ["Passionate", "Caring", "Expressive", "Romantic"],
+    colors: [
+      ["Rose Red", "#A83B46"],
+      ["Blush", "#DDA6A0"],
+      ["Garden Green", "#647A5A"]
+    ],
+    why:
+      "The rose combines beauty, depth and variety, reflecting the warmth and emotional richness traditionally associated with June."
+  },
+
+  july: {
+    month: "July",
+    flower: "Larkspur",
+    icon: "💐",
+    meaning: "Positivity, dignity and an open heart",
+    symbolism:
+      "Larkspur is traditionally associated with positivity, affection and a generous spirit.",
+    traits: ["Open-hearted", "Positive", "Confident", "Friendly"],
+    colors: [
+      ["Blue Violet", "#6D6BA6"],
+      ["Soft Blue", "#9CB4CE"],
+      ["Fresh Green", "#7C956F"]
+    ],
+    why:
+      "Its tall, expressive blooms create a feeling of openness and energy, fitting the bright character of midsummer."
+  },
+
+  august: {
+    month: "August",
+    flower: "Gladiolus",
+    icon: "🌺",
+    meaning: "Strength, sincerity and determination",
+    symbolism:
+      "Gladiolus flowers are associated with strength of character, integrity and remembrance.",
+    traits: ["Strong", "Focused", "Sincere", "Ambitious"],
+    colors: [
+      ["Coral", "#DA786C"],
+      ["Warm Pink", "#D8919D"],
+      ["Deep Green", "#506A50"]
+    ],
+    why:
+      "The gladiolus grows in striking upright spikes, making it a natural symbol of strength, confidence and determination."
+  },
+
+  september: {
+    month: "September",
+    flower: "Aster",
+    icon: "🌸",
+    meaning: "Wisdom, patience and affection",
+    symbolism:
+      "Asters traditionally represent wisdom, patience and enduring affection.",
+    traits: ["Wise", "Patient", "Observant", "Caring"],
+    colors: [
+      ["Aster Purple", "#7B658D"],
+      ["Dusty Pink", "#C8939C"],
+      ["Muted Green", "#788870"]
+    ],
+    why:
+      "Asters bloom as summer begins to fade, giving them a long-standing association with patience, transition and lasting beauty."
+  },
+
+  october: {
+    month: "October",
+    flower: "Marigold",
+    icon: "🌼",
+    meaning: "Warmth, creativity and determination",
+    symbolism:
+      "Marigolds are known for their vivid colors and are associated with warmth, creativity and strong emotional energy.",
+    traits: ["Creative", "Bold", "Warm", "Resilient"],
+    colors: [
+      ["Marigold", "#D9932D"],
+      ["Burnt Orange", "#C56A32"],
+      ["Olive Green", "#777A4F"]
+    ],
+    why:
+      "Their rich autumn colors and resilient blooms beautifully reflect October's changing landscape and creative energy."
+  },
+
+  november: {
+    month: "November",
+    flower: "Chrysanthemum",
+    icon: "🌻",
+    meaning: "Joy, friendship and optimism",
+    symbolism:
+      "Chrysanthemums carry meanings of happiness, friendship, longevity and positive wishes in many traditions.",
+    traits: ["Friendly", "Optimistic", "Generous", "Steady"],
+    colors: [
+      ["Golden Yellow", "#D8A53F"],
+      ["Cream", "#EEE3C5"],
+      ["Autumn Green", "#697456"]
+    ],
+    why:
+      "Chrysanthemums continue to bloom late in the year, symbolizing enduring optimism and beauty as the seasons change."
+  },
+
+  december: {
+    month: "December",
+    flower: "Narcissus",
+    icon: "🌼",
+    meaning: "Hope, renewal and good wishes",
+    symbolism:
+      "Narcissus flowers traditionally represent hope, renewal and the promise of positive beginnings.",
+    traits: ["Hopeful", "Reflective", "Independent", "Warm"],
+    colors: [
+      ["Winter White", "#F1F0E8"],
+      ["Soft Yellow", "#E8CE72"],
+      ["Evergreen", "#4E6650"]
+    ],
+    why:
+      "Its association with renewal makes narcissus an especially meaningful flower for the final month of the year and the beginning of another cycle."
+  }
+
+};
+
+
+const buttons = document.querySelectorAll(".month-btn");
+const placeholder = document.getElementById("resultPlaceholder");
+const resultCard = document.getElementById("resultCard");
+
+let selectedData = null;
+
+
+buttons.forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    buttons.forEach(btn => btn.classList.remove("active"));
+    button.classList.add("active");
+
+    const month = button.dataset.month;
+    selectedData = data[month];
+
+    document.getElementById("flowerIcon").textContent =
+      selectedData.icon;
+
+    document.getElementById("resultMonth").textContent =
+      `${selectedData.month} Birth Flower`;
+
+    document.getElementById("flowerName").textContent =
+      selectedData.flower;
+
+    document.getElementById("flowerMeaning").textContent =
+      selectedData.meaning;
+
+    document.getElementById("flowerSymbolism").textContent =
+      selectedData.symbolism;
+
+    document.getElementById("flowerWhy").textContent =
+      selectedData.why;
+
+
+    document.getElementById("traitList").innerHTML =
+      selectedData.traits
+        .map(trait => `<span class="trait">${trait}</span>`)
+        .join("");
+
+
+    document.getElementById("colorList").innerHTML =
+      selectedData.colors
+        .map(color => `
+          <div class="color-chip">
+            <span
+              class="color-dot"
+              style="background:${color[1]}"
+            ></span>
+
+            ${color[0]}
+          </div>
+        `)
+        .join("");
+
+
+    placeholder.style.display = "none";
+    resultCard.classList.add("show");
+
+  });
+
+});
+
+
+document.getElementById("copyResult").addEventListener("click", async () => {
+
+  if (!selectedData) return;
+
+  const text =
+    `My birth flower is ${selectedData.flower} 🌿\n` +
+    `${selectedData.meaning}\n\n` +
+    `Personality: ${selectedData.traits.join(", ")}\n\n` +
+    `Discover yours at LeoFlora.art`;
+
+  await navigator.clipboard.writeText(text);
+
+  const button = document.getElementById("copyResult");
+
+  button.textContent = "Copied ✓";
+
+  setTimeout(() => {
+    button.textContent = "Copy My Result";
+  }, 1800);
+
+});
+
+
+document.getElementById("resetResult").addEventListener("click", () => {
+
+  buttons.forEach(btn => btn.classList.remove("active"));
+
+  resultCard.classList.remove("show");
+
+  placeholder.style.display = "flex";
+
+  selectedData = null;
+
+  window.scrollTo({
+    top: 200,
+    behavior: "smooth"
+  });
+
+});
+
+
+const menuButton = document.getElementById("menuButton");
+const menu = document.getElementById("menu");
+
+menuButton.addEventListener("click", () => {
+  menu.classList.toggle("open");
+});
+</script>
+
+</body>
+</html>
