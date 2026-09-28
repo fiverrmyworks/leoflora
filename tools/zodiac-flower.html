@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Zodiac Flower Finder | LeoFlora.art</title>
+
+  <meta
+    name="description"
+    content="Discover the flower connected to your zodiac sign, including its symbolism, personality traits, colors and meaning."
+  >
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <style>
+    .tool-page {
+      padding: 90px 0 110px;
+    }
+
+    .tool-hero {
+      max-width: 820px;
+      margin: 0 auto 60px;
+      text-align: center;
+    }
+
+    .tool-hero h1 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.05;
+    }
+
+    .tool-hero h1 span {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .tool-hero > p:last-child {
+      color: var(--muted);
+      max-width: 650px;
+      margin: 22px auto 0;
+    }
+
+    .zodiac-layout {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    .zodiac-selector,
+    .zodiac-result {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 34px;
+    }
+
+    .zodiac-selector h2 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .zodiac-selector > p {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .sign-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .sign-btn {
+      border: 1px solid var(--border);
+      background: var(--cream);
+      border-radius: 14px;
+      padding: 14px 8px;
+      cursor: pointer;
+      color: var(--forest);
+      font-weight: 600;
+      transition: .2s ease;
+    }
+
+    .sign-btn span {
+      display: block;
+      font-size: 1.4rem;
+      margin-bottom: 3px;
+    }
+
+    .sign-btn:hover,
+    .sign-btn.active {
+      background: var(--forest);
+      color: white;
+      border-color: var(--forest);
+    }
+
+    .result-placeholder {
+      min-height: 520px;
+      border: 1px dashed var(--border);
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+      padding: 30px;
+    }
+
+    .result-placeholder .symbol {
+      font-size: 4rem;
+      margin-bottom: 10px;
+    }
+
+    .result-card {
+      display: none;
+    }
+
+    .result-card.show {
+      display: block;
+    }
+
+    .result-top {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .flower-icon {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--cream);
+      font-size: 4rem;
+      flex-shrink: 0;
+    }
+
+    .result-sign {
+      color: var(--gold);
+      font-size: .75rem;
+      letter-spacing: .16em;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .result-name {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 2.4rem;
+      margin-top: 4px;
+    }
+
+    .result-tagline {
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .result-section {
+      padding-top: 26px;
+    }
+
+    .result-section h3 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .result-section p {
+      color: var(--muted);
+    }
+
+    .trait-list,
+    .color-list {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .trait {
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: var(--sage);
+      color: var(--forest);
+      font-size: .84rem;
+      font-weight: 600;
+    }
+
+    .color-chip {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: .83rem;
+    }
+
+    .color-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-top: 28px;
+    }
+
+    .copy-btn {
+      background: var(--forest);
+      color: white;
+    }
+
+    .secondary-btn {
+      background: var(--cream);
+      color: var(--forest);
+      border: 1px solid var(--border);
+    }
+
+    .info-section {
+      padding: 100px 0;
+      background: white;
+    }
+
+    .info-content {
+      max-width: 820px;
+      margin: auto;
+    }
+
+    .info-content h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 2.4rem;
+      color: var(--forest);
+      margin-bottom: 18px;
+    }
+
+    .info-content h3 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      margin-top: 32px;
+      margin-bottom: 10px;
+      font-size: 1.4rem;
+    }
+
+    .info-content p {
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    @media(max-width: 850px) {
+      .zodiac-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(max-width: 550px) {
+      .sign-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .zodiac-selector,
+      .zodiac-result {
+        padding: 22px;
+      }
+
+      .flower-icon {
+        width: 82px;
+        height: 82px;
+        font-size: 3rem;
+      }
+
+      .result-name {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="container nav">
+
+    <a href="../index.html" class="logo">
+      LeoFlora<span>.art</span>
+    </a>
+
+    <nav id="menu">
+      <a href="../index.html#flowers">Flower Meanings</a>
+      <a href="../index.html#tools">Discover</a>
+      <a href="birth-flower.html">Birth Flowers</a>
+      <a href="../index.html#guides">Guides</a>
+    </nav>
+
+    <button id="menuButton" class="menu-button" aria-label="Open menu">
+      ☰
+    </button>
+
+  </div>
+</header>
+
+
+<main>
+
+<section class="tool-page">
+
+  <div class="container">
+
+    <div class="tool-hero">
+
+      <p class="eyebrow">ZODIAC FLOWER FINDER</p>
+
+      <h1>
+        Find the flower that matches
+        <span>your zodiac sign.</span>
+      </h1>
+
+      <p>
+        Choose your zodiac sign and explore a symbolic flower connection,
+        personality themes and botanical colors.
+      </p>
+
+    </div>
+
+
+    <div class="zodiac-layout">
+
+      <div class="zodiac-selector">
+
+        <h2>Select your sign</h2>
+
+        <p>
+          Choose one of the twelve zodiac signs below.
+        </p>
+
+        <div class="sign-grid">
+
+          <button class="sign-btn" data-sign="aries"><span>♈</span>Aries</button>
+          <button class="sign-btn" data-sign="taurus"><span>♉</span>Taurus</button>
+          <button class="sign-btn" data-sign="gemini"><span>♊</span>Gemini</button>
+          <button class="sign-btn" data-sign="cancer"><span>♋</span>Cancer</button>
+          <button class="sign-btn" data-sign="leo"><span>♌</span>Leo</button>
+          <button class="sign-btn" data-sign="virgo"><span>♍</span>Virgo</button>
+          <button class="sign-btn" data-sign="libra"><span>♎</span>Libra</button>
+          <button class="sign-btn" data-sign="scorpio"><span>♏</span>Scorpio</button>
+          <button class="sign-btn" data-sign="sagittarius"><span>♐</span>Sagittarius</button>
+          <button class="sign-btn" data-sign="capricorn"><span>♑</span>Capricorn</button>
+          <button class="sign-btn" data-sign="aquarius"><span>♒</span>Aquarius</button>
+          <button class="sign-btn" data-sign="pisces"><span>♓</span>Pisces</button>
+
+        </div>
+
+      </div>
+
+
+      <div class="zodiac-result">
+
+        <div class="result-placeholder" id="resultPlaceholder">
+          <div>
+            <div class="symbol">✨</div>
+            <strong style="color:var(--forest);font-size:1.2rem;">
+              Your zodiac flower is waiting
+            </strong>
+            <p style="margin-top:8px;">
+              Select your zodiac sign to reveal the flower connection.
+            </p>
+          </div>
+        </div>
+
+
+        <div class="result-card" id="resultCard">
+
+          <div class="result-top">
+
+            <div class="flower-icon" id="flowerIcon"></div>
+
+            <div>
+              <div class="result-sign" id="resultSign"></div>
+              <div class="result-name" id="flowerName"></div>
+              <div class="result-tagline" id="flowerTagline"></div>
+            </div>
+
+          </div>
+
+
+          <div class="result-section">
+            <h3>Symbolism</h3>
+            <p id="flowerSymbolism"></p>
+          </div>
+
+
+          <div class="result-section">
+            <h3>Personality connection</h3>
+            <div class="trait-list" id="traitList"></div>
+          </div>
+
+
+          <div class="result-section">
+            <h3>Botanical colors</h3>
+            <div class="color-list" id="colorList"></div>
+          </div>
+
+
+          <div class="result-section">
+            <h3>Why this flower fits</h3>
+            <p id="flowerWhy"></p>
+          </div>
+
+
+          <div class="result-actions">
+
+            <button class="button copy-btn" id="copyResult">
+              Copy My Result
+            </button>
+
+            <button class="button secondary-btn" id="resetResult">
+              Choose Another Sign
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="info-section">
+
+  <div class="container info-content">
+
+    <p class="eyebrow">FLOWERS & ASTROLOGY</p>
+
+    <h2>What is a zodiac flower?</h2>
+
+    <p>
+      Zodiac flowers are symbolic flower associations connected with the
+      traditional personality themes of each zodiac sign. Different sources
+      may use different flowers, so these pairings are best understood as
+      creative and cultural associations rather than fixed scientific rules.
+    </p>
+
+    <h3>Why do zodiac signs have flower associations?</h3>
+
+    <p>
+      Flowers have long been used to represent emotions, virtues and
+      personality qualities. Over time, botanical symbolism and astrology
+      have been combined to create flower associations for the zodiac signs.
+    </p>
+
+    <h3>Can my zodiac sign have more than one flower?</h3>
+
+    <p>
+      Yes. There is no single universal list. Different traditions and
+      modern interpretations may connect a sign with several flowers.
+      LeoFlora presents one fitting symbolic match for each sign.
+    </p>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+  <div class="container footer-grid">
+
+    <div>
+      <a href="../index.html" class="logo footer-logo">
+        LeoFlora<span>.art</span>
+      </a>
+
+      <p>
+        Discover the meaning, symbolism and beauty behind every flower.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <a href="../about.html">About</a>
+      <a href="../contact.html">Contact</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="../terms.html">Terms</a>
+      <a href="../licensing.html">Licensing</a>
+    </div>
+
+  </div>
+
+  <div class="copyright">
+    © 2026 LeoFlora.art. All rights reserved.
+  </div>
+
+</footer>
+
+
+<script>
+const zodiacData = {
+
+  aries: {
+    sign: "Aries",
+    dates: "March 21 – April 19",
+    flower: "Honeysuckle",
+    icon: "🌺",
+    tagline: "Energy, enthusiasm and bold beginnings",
+    symbolism:
+      "Honeysuckle is associated with lively energy, affection and the excitement of new beginnings.",
+    traits: ["Bold", "Energetic", "Confident", "Adventurous"],
+    colors: [
+      ["Coral", "#E77A66"],
+      ["Warm Red", "#B84C4C"],
+      ["Fresh Green", "#73936B"]
+    ],
+    why:
+      "Aries is traditionally associated with initiative and enthusiasm. Honeysuckle's vigorous growth and vivid presence make it a natural symbolic match."
+  },
+
+  taurus: {
+    sign: "Taurus",
+    dates: "April 20 – May 20",
+    flower: "Poppy",
+    icon: "🌺",
+    tagline: "Beauty, comfort and grounded strength",
+    symbolism:
+      "Poppies often symbolize imagination, beauty, rest and emotional richness.",
+    traits: ["Grounded", "Loyal", "Patient", "Sensual"],
+    colors: [
+      ["Poppy Red", "#C95247"],
+      ["Cream", "#EFE6D3"],
+      ["Olive", "#78815A"]
+    ],
+    why:
+      "Taurus is often associated with stability, beauty and appreciation of life's comforts, qualities that pair naturally with the elegant poppy."
+  },
+
+  gemini: {
+    sign: "Gemini",
+    dates: "May 21 – June 20",
+    flower: "Lavender",
+    icon: "💜",
+    tagline: "Curiosity, expression and versatility",
+    symbolism:
+      "Lavender is widely associated with calm, communication, grace and thoughtful expression.",
+    traits: ["Curious", "Social", "Quick-minded", "Versatile"],
+    colors: [
+      ["Lavender", "#A98BB8"],
+      ["Soft Lilac", "#C7B3D2"],
+      ["Sage", "#879A79"]
+    ],
+    why:
+      "Gemini is traditionally linked with communication and adaptability. Lavender's many uses and expressive fragrance make it a fitting symbolic pairing."
+  },
+
+  cancer: {
+    sign: "Cancer",
+    dates: "June 21 – July 22",
+    flower: "White Rose",
+    icon: "🤍",
+    tagline: "Care, sensitivity and emotional depth",
+    symbolism:
+      "White roses traditionally represent sincerity, purity, gentleness and heartfelt connection.",
+    traits: ["Caring", "Sensitive", "Protective", "Intuitive"],
+    colors: [
+      ["Pearl", "#F3EFE8"],
+      ["Soft White", "#FAF8F2"],
+      ["Moon Green", "#8A9A87"]
+    ],
+    why:
+      "Cancer is often associated with emotional sensitivity, loyalty and nurturing qualities, which align naturally with the gentle symbolism of the white rose."
+  },
+
+  leo: {
+    sign: "Leo",
+    dates: "July 23 – August 22",
+    flower: "Sunflower",
+    icon: "🌻",
+    tagline: "Confidence, warmth and joyful presence",
+    symbolism:
+      "Sunflowers symbolize positivity, admiration, loyalty and the warmth of the sun.",
+    traits: ["Confident", "Warm", "Generous", "Creative"],
+    colors: [
+      ["Sun Gold", "#E1A72F"],
+      ["Amber", "#C9852D"],
+      ["Leaf Green", "#6C8057"]
+    ],
+    why:
+      "Leo is traditionally associated with confidence, creativity and warmth. The sunflower's bright, commanding presence reflects those qualities beautifully."
+  },
+
+  virgo: {
+    sign: "Virgo",
+    dates: "August 23 – September 22",
+    flower: "Chrysanthemum",
+    icon: "🌼",
+    tagline: "Thoughtfulness, detail and quiet strength",
+    symbolism:
+      "Chrysanthemums are often associated with loyalty, thoughtfulness, longevity and composed beauty.",
+    traits: ["Practical", "Thoughtful", "Observant", "Reliable"],
+    colors: [
+      ["Cream", "#EEE4C9"],
+      ["Soft Gold", "#D6B65A"],
+      ["Muted Green", "#7A8A69"]
+    ],
+    why:
+      "Virgo is commonly associated with precision, service and reliability. The structured beauty of chrysanthemums makes them a strong symbolic match."
+  },
+
+  libra: {
+    sign: "Libra",
+    dates: "September 23 – October 22",
+    flower: "Rose",
+    icon: "🌹",
+    tagline: "Harmony, beauty and connection",
+    symbolism:
+      "Roses symbolize love, appreciation, beauty and meaningful relationships.",
+    traits: ["Balanced", "Charming", "Social", "Graceful"],
+    colors: [
+      ["Blush", "#DEA6A1"],
+      ["Rose", "#BD6672"],
+      ["Soft Green", "#809178"]
+    ],
+    why:
+      "Libra is strongly associated with harmony, relationships and aesthetic appreciation, making the classic rose a fitting flower connection."
+  },
+
+  scorpio: {
+    sign: "Scorpio",
+    dates: "October 23 – November 21",
+    flower: "Geranium",
+    icon: "🌺",
+    tagline: "Depth, resilience and transformation",
+    symbolism:
+      "Geraniums can symbolize determination, friendship, resilience and emotional depth.",
+    traits: ["Intense", "Loyal", "Determined", "Perceptive"],
+    colors: [
+      ["Deep Rose", "#9D455C"],
+      ["Burgundy", "#713844"],
+      ["Dark Green", "#445D49"]
+    ],
+    why:
+      "Scorpio is traditionally associated with emotional depth, determination and transformation, themes reflected by the strong and expressive geranium."
+  },
+
+  sagittarius: {
+    sign: "Sagittarius",
+    dates: "November 22 – December 21",
+    flower: "Carnation",
+    icon: "🌸",
+    tagline: "Adventure, optimism and open-hearted energy",
+    symbolism:
+      "Carnations symbolize admiration, affection and enduring positivity.",
+    traits: ["Adventurous", "Optimistic", "Independent", "Open-minded"],
+    colors: [
+      ["Warm Pink", "#D58F9C"],
+      ["Coral", "#DB806D"],
+      ["Herb Green", "#70866A"]
+    ],
+    why:
+      "Sagittarius is often associated with exploration, optimism and enthusiasm. The carnation's enduring brightness pairs well with that adventurous spirit."
+  },
+
+  capricorn: {
+    sign: "Capricorn",
+    dates: "December 22 – January 19",
+    flower: "Pansy",
+    icon: "🌸",
+    tagline: "Resilience, loyalty and thoughtful strength",
+    symbolism:
+      "Pansies are associated with remembrance, thoughtfulness and quiet endurance.",
+    traits: ["Disciplined", "Reliable", "Patient", "Ambitious"],
+    colors: [
+      ["Deep Violet", "#66537F"],
+      ["Golden Center", "#D5AB4B"],
+      ["Forest Green", "#50674F"]
+    ],
+    why:
+      "Capricorn is traditionally connected with perseverance, patience and responsibility. The hardy pansy mirrors that quiet resilience."
+  },
+
+  aquarius: {
+    sign: "Aquarius",
+    dates: "January 20 – February 18",
+    flower: "Orchid",
+    icon: "🌺",
+    tagline: "Originality, independence and imagination",
+    symbolism:
+      "Orchids often represent individuality, elegance, creativity and uncommon beauty.",
+    traits: ["Original", "Independent", "Inventive", "Visionary"],
+    colors: [
+      ["Orchid Purple", "#9B6FA8"],
+      ["Mist Pink", "#D7B5C7"],
+      ["Cool Green", "#708B7A"]
+    ],
+    why:
+      "Aquarius is often associated with originality and unconventional thinking. The distinctive orchid naturally reflects those qualities."
+  },
+
+  pisces: {
+    sign: "Pisces",
+    dates: "February 19 – March 20",
+    flower: "Water Lily",
+    icon: "🪷",
+    tagline: "Imagination, empathy and emotional depth",
+    symbolism:
+      "Water lilies are associated with serenity, renewal, beauty and spiritual reflection.",
+    traits: ["Empathetic", "Creative", "Intuitive", "Dreamy"],
+    colors: [
+      ["Water Pink", "#D7A7B5"],
+      ["Lilac", "#B7A2C8"],
+      ["Pond Green", "#75907D"]
+    ],
+    why:
+      "Pisces is traditionally linked with imagination, intuition and emotional depth. The water lily's tranquil presence makes it a natural symbolic match."
+  }
+
+};
+
+
+const buttons = document.querySelectorAll(".sign-btn");
+const placeholder = document.getElementById("resultPlaceholder");
+const resultCard = document.getElementById("resultCard");
+let current = null;
+
+
+buttons.forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    buttons.forEach(btn => btn.classList.remove("active"));
+    button.classList.add("active");
+
+    current = zodiacData[button.dataset.sign];
+
+    document.getElementById("flowerIcon").textContent =
+      current.icon;
+
+    document.getElementById("resultSign").textContent =
+      `${current.sign} · ${current.dates}`;
+
+    document.getElementById("flowerName").textContent =
+      current.flower;
+
+    document.getElementById("flowerTagline").textContent =
+      current.tagline;
+
+    document.getElementById("flowerSymbolism").textContent =
+      current.symbolism;
+
+    document.getElementById("flowerWhy").textContent =
+      current.why;
+
+    document.getElementById("traitList").innerHTML =
+      current.traits
+        .map(trait => `<span class="trait">${trait}</span>`)
+        .join("");
+
+    document.getElementById("colorList").innerHTML =
+      current.colors
+        .map(color => `
+          <div class="color-chip">
+            <span
+              class="color-dot"
+              style="background:${color[1]}"
+            ></span>
+            ${color[0]}
+          </div>
+        `)
+        .join("");
+
+    placeholder.style.display = "none";
+    resultCard.classList.add("show");
+
+  });
+
+});
+
+
+document.getElementById("copyResult").addEventListener("click", async () => {
+
+  if (!current) return;
+
+  const text =
+    `My zodiac flower is ${current.flower} ${current.icon}\n` +
+    `${current.sign}: ${current.tagline}\n\n` +
+    `Traits: ${current.traits.join(", ")}\n\n` +
+    `Discover yours at LeoFlora.art`;
+
+  await navigator.clipboard.writeText(text);
+
+  const btn = document.getElementById("copyResult");
+
+  btn.textContent = "Copied ✓";
+
+  setTimeout(() => {
+    btn.textContent = "Copy My Result";
+  }, 1800);
+
+});
+
+
+document.getElementById("resetResult").addEventListener("click", () => {
+
+  buttons.forEach(btn => btn.classList.remove("active"));
+
+  resultCard.classList.remove("show");
+
+  placeholder.style.display = "grid";
+
+  current = null;
+
+});
+
+
+const menuButton = document.getElementById("menuButton");
+const menu = document.getElementById("menu");
+
+menuButton.addEventListener("click", () => {
+  menu.classList.toggle("open");
+});
+</script>
+
+</body>
+</html>
