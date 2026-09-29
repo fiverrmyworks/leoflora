@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Flower Message Generator | LeoFlora.art</title>
+
+  <meta
+    name="description"
+    content="Generate meaningful flower card messages for birthdays, anniversaries, thank you gifts, weddings, friendship and more."
+  >
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <style>
+    .tool-page {
+      padding: 90px 0 110px;
+    }
+
+    .tool-hero {
+      max-width: 820px;
+      margin: 0 auto 60px;
+      text-align: center;
+    }
+
+    .tool-hero h1 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.05;
+    }
+
+    .tool-hero h1 span {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .tool-hero > p:last-child {
+      max-width: 650px;
+      margin: 22px auto 0;
+      color: var(--muted);
+    }
+
+    .generator-layout {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    .generator-form,
+    .generator-result {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 34px;
+    }
+
+    .generator-form h2 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .generator-form > p {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .field {
+      margin-bottom: 22px;
+    }
+
+    .field label {
+      display: block;
+      color: var(--forest);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .field select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--cream);
+      outline: none;
+    }
+
+    .field select:focus {
+      border-color: var(--gold);
+    }
+
+    .generate-btn {
+      width: 100%;
+      background: var(--forest);
+      color: white;
+    }
+
+    .placeholder {
+      min-height: 580px;
+      border: 1px dashed var(--border);
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+      padding: 30px;
+    }
+
+    .placeholder .icon {
+      font-size: 4rem;
+      margin-bottom: 12px;
+    }
+
+    .result-card {
+      display: none;
+    }
+
+    .result-card.show {
+      display: block;
+    }
+
+    .result-heading {
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-label {
+      color: var(--gold);
+      letter-spacing: .16em;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+
+    .result-heading h2 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 2.2rem;
+      margin-top: 8px;
+    }
+
+    .result-heading p {
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .message-option {
+      margin-top: 25px;
+      padding: 22px;
+      border-radius: 18px;
+      background: var(--cream);
+      border: 1px solid var(--border);
+    }
+
+    .message-option h3 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .message-option p {
+      color: var(--charcoal);
+      line-height: 1.7;
+    }
+
+    .message-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .copy-button {
+      padding: 9px 15px;
+      border: none;
+      border-radius: 999px;
+      background: var(--forest);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .variation-button {
+      padding: 9px 15px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: white;
+      color: var(--forest);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .bottom-actions {
+      margin-top: 28px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .regenerate {
+      background: var(--gold);
+      color: var(--forest);
+    }
+
+    .reset {
+      background: var(--cream);
+      color: var(--forest);
+      border: 1px solid var(--border);
+    }
+
+    .info-section {
+      padding: 100px 0;
+      background: white;
+    }
+
+    .info-content {
+      max-width: 820px;
+      margin: auto;
+    }
+
+    .info-content h2 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 2.4rem;
+      margin-bottom: 18px;
+    }
+
+    .info-content h3 {
+      font-family: "Playfair Display", serif;
+      color: var(--forest);
+      font-size: 1.4rem;
+      margin-top: 32px;
+      margin-bottom: 10px;
+    }
+
+    .info-content p {
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    @media(max-width:850px) {
+      .generator-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(max-width:550px) {
+      .generator-form,
+      .generator-result {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="container nav">
+
+    <a href="../index.html" class="logo">
+      LeoFlora<span>.art</span>
+    </a>
+
+    <nav id="menu">
+      <a href="../index.html#flowers">Flower Meanings</a>
+      <a href="../index.html#tools">Discover</a>
+      <a href="birth-flower.html">Birth Flowers</a>
+      <a href="zodiac-flower.html">Zodiac Flowers</a>
+    </nav>
+
+    <button id="menuButton" class="menu-button" aria-label="Open menu">
+      ☰
+    </button>
+
+  </div>
+</header>
+
+
+<main>
+
+<section class="tool-page">
+
+  <div class="container">
+
+    <div class="tool-hero">
+
+      <p class="eyebrow">FLOWER MESSAGE GENERATOR</p>
+
+      <h1>
+        Find the right words
+        <span>for your flowers.</span>
+      </h1>
+
+      <p>
+        Choose the occasion, recipient, tone and flower.
+        LeoFlora will create multiple card-message ideas for you.
+      </p>
+
+    </div>
+
+
+    <div class="generator-layout">
+
+      <div class="generator-form">
+
+        <h2>Create your message</h2>
+
+        <p>
+          Tell us what kind of note you want to send.
+        </p>
+
+
+        <div class="field">
+          <label for="occasion">Occasion</label>
+
+          <select id="occasion">
+            <option value="">Choose an occasion</option>
+            <option value="birthday">Birthday</option>
+            <option value="anniversary">Anniversary</option>
+            <option value="thankyou">Thank You</option>
+            <option value="friendship">Friendship</option>
+            <option value="congratulations">Congratulations</option>
+            <option value="wedding">Wedding</option>
+            <option value="graduation">Graduation</option>
+            <option value="apology">Apology</option>
+            <option value="mothersday">Mother's Day</option>
+            <option value="justbecause">Just Because</option>
+          </select>
+        </div>
+
+
+        <div class="field">
+          <label for="recipient">Recipient</label>
+
+          <select id="recipient">
+            <option value="">Choose a recipient</option>
+            <option value="partner">Partner</option>
+            <option value="friend">Friend</option>
+            <option value="mother">Mother</option>
+            <option value="father">Father</option>
+            <option value="sister">Sister</option>
+            <option value="coworker">Coworker</option>
+            <option value="teacher">Teacher</option>
+          </select>
+        </div>
+
+
+        <div class="field">
+          <label for="tone">Tone</label>
+
+          <select id="tone">
+            <option value="">Choose a tone</option>
+            <option value="warm">Warm</option>
+            <option value="romantic">Romantic</option>
+            <option value="elegant">Elegant</option>
+            <option value="cute">Cute</option>
+            <option value="short">Short & Simple</option>
+            <option value="heartfelt">Heartfelt</option>
+          </select>
+        </div>
+
+
+        <div class="field">
+          <label for="flower">Flower</label>
+
+          <select id="flower">
+            <option value="">Choose a flower</option>
+            <option value="rose">Rose</option>
+            <option value="sunflower">Sunflower</option>
+            <option value="tulip">Tulip</option>
+            <option value="orchid">Orchid</option>
+            <option value="lily">Lily</option>
+            <option value="lavender">Lavender</option>
+            <option value="daisy">Daisy</option>
+            <option value="peony">Peony</option>
+          </select>
+        </div>
+
+
+        <button class="button generate-btn" id="generateMessage">
+          Generate Messages
+        </button>
+
+      </div>
+
+
+      <div class="generator-result">
+
+        <div class="placeholder" id="placeholder">
+          <div>
+            <div class="icon">💌</div>
+
+            <strong style="color:var(--forest);font-size:1.2rem;">
+              Your messages will appear here
+            </strong>
+
+            <p style="margin-top:8px;">
+              Choose the options on the left and generate your flower card message.
+            </p>
+          </div>
+        </div>
+
+
+        <div class="result-card" id="resultCard">
+
+          <div class="result-heading">
+
+            <div class="result-label">YOUR FLOWER CARD</div>
+
+            <h2 id="resultTitle"></h2>
+
+            <p id="resultSubtitle"></p>
+
+          </div>
+
+
+          <div class="message-option">
+
+            <h3>Short message</h3>
+
+            <p id="shortMessage"></p>
+
+            <div class="message-actions">
+              <button class="copy-button" data-copy="shortMessage">
+                Copy
+              </button>
+            </div>
+
+          </div>
+
+
+          <div class="message-option">
+
+            <h3>Medium message</h3>
+
+            <p id="mediumMessage"></p>
+
+            <div class="message-actions">
+              <button class="copy-button" data-copy="mediumMessage">
+                Copy
+              </button>
+            </div>
+
+          </div>
+
+
+          <div class="message-option">
+
+            <h3>Heartfelt message</h3>
+
+            <p id="longMessage"></p>
+
+            <div class="message-actions">
+              <button class="copy-button" data-copy="longMessage">
+                Copy
+              </button>
+            </div>
+
+          </div>
+
+
+          <div class="bottom-actions">
+
+            <button class="button regenerate" id="regenerate">
+              Generate New Variation
+            </button>
+
+            <button class="button reset" id="reset">
+              Start Again
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="info-section">
+
+  <div class="container info-content">
+
+    <p class="eyebrow">FLOWER CARD ETIQUETTE</p>
+
+    <h2>What should you write on a flower card?</h2>
+
+    <p>
+      The best flower messages are usually simple, sincere and appropriate
+      for the relationship. You do not need a long note to make a flower gift meaningful.
+    </p>
+
+    <h3>Should a flower message mention the flower itself?</h3>
+
+    <p>
+      It can. Mentioning the symbolism of the flower can make your message
+      feel more personal, especially when the flower was chosen for a specific meaning.
+    </p>
+
+    <h3>How long should a flower card message be?</h3>
+
+    <p>
+      Short messages work well for casual gifts and bouquets, while a longer
+      heartfelt note may be more suitable for anniversaries, weddings or meaningful milestones.
+    </p>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+  <div class="container footer-grid">
+
+    <div>
+      <a href="../index.html" class="logo footer-logo">
+        LeoFlora<span>.art</span>
+      </a>
+
+      <p>
+        Discover the meaning, symbolism and beauty behind every flower.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <a href="../about.html">About</a>
+      <a href="../contact.html">Contact</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="../terms.html">Terms</a>
+      <a href="../licensing.html">Licensing</a>
+    </div>
+
+  </div>
+
+  <div class="copyright">
+    © 2026 LeoFlora.art. All rights reserved.
+  </div>
+
+</footer>
+
+
+<script>
+const flowerMeanings = {
+  rose: "love and heartfelt affection",
+  sunflower: "joy, loyalty and positivity",
+  tulip: "grace, affection and renewal",
+  orchid: "elegance, admiration and individuality",
+  lily: "grace, sincerity and beauty",
+  lavender: "calm, thoughtfulness and serenity",
+  daisy: "joy, simplicity and fresh beginnings",
+  peony: "happiness, good wishes and romance"
+};
+
+const flowerNames = {
+  rose: "Rose",
+  sunflower: "Sunflower",
+  tulip: "Tulip",
+  orchid: "Orchid",
+  lily: "Lily",
+  lavender: "Lavender",
+  daisy: "Daisy",
+  peony: "Peony"
+};
+
+const recipientNames = {
+  partner: "my love",
+  friend: "my friend",
+  mother: "Mom",
+  father: "Dad",
+  sister: "my sister",
+  coworker: "you",
+  teacher: "you"
+};
+
+const occasionOpeners = {
+  birthday: [
+    "Wishing you a beautiful birthday",
+    "Happy birthday to someone truly special",
+    "Sending you the warmest birthday wishes"
+  ],
+
+  anniversary: [
+    "Happy anniversary",
+    "Celebrating another beautiful chapter together",
+    "Here’s to the memories we’ve made and the ones still to come"
+  ],
+
+  thankyou: [
+    "Thank you for everything you do",
+    "Just a little note to say thank you",
+    "Your kindness means more than you know"
+  ],
+
+  friendship: [
+    "So grateful for your friendship",
+    "Life is brighter with a friend like you",
+    "A little reminder of how much your friendship means"
+  ],
+
+  congratulations: [
+    "Congratulations on this wonderful achievement",
+    "You did it, and I’m so happy for you",
+    "Celebrating your success today"
+  ],
+
+  wedding: [
+    "Wishing you both a lifetime of happiness",
+    "Congratulations on your beautiful beginning",
+    "May your life together be filled with love and joy"
+  ],
+
+  graduation: [
+    "Congratulations on your graduation",
+    "Here’s to an exciting new chapter",
+    "You worked hard for this moment"
+  ],
+
+  apology: [
+    "I’m sorry",
+    "I hope these flowers carry the sincerity of my apology",
+    "I wish I could change what happened, but I hope you know I care"
+  ],
+
+  mothersday: [
+    "Happy Mother’s Day",
+    "Thank you for your endless love and care",
+    "Celebrating everything that makes you such a wonderful mother"
+  ],
+
+  justbecause: [
+    "Just because you deserve something beautiful",
+    "No special reason, just a little happiness for you",
+    "A small reminder that you’re appreciated"
+  ]
+};
+
+const toneEndings = {
+  warm: [
+    "I hope these flowers bring a little extra warmth to your day.",
+    "Sending you happiness, kindness and the warmest thoughts.",
+    "Hope this small gesture makes your day a little brighter."
+  ],
+
+  romantic: [
+    "Every day with you means more to me than words can say.",
+    "These flowers are beautiful, but not nearly as beautiful as what you mean to me.",
+    "With all my love, today and always."
+  ],
+
+  elegant: [
+    "Wishing you a moment filled with beauty, grace and happiness.",
+    "May these flowers express what simple words sometimes cannot.",
+    "With warmest wishes and sincere appreciation."
+  ],
+
+  cute: [
+    "A little bloom for someone who makes life sweeter.",
+    "Hope these flowers make you smile as much as you make me smile.",
+    "Sending you petals, smiles and good vibes."
+  ],
+
+  short: [
+    "Hope these brighten your day.",
+    "Thinking of you.",
+    "With warm wishes."
+  ],
+
+  heartfelt: [
+    "You have brought so much meaning and kindness into my life, and I hope these flowers remind you how deeply appreciated you are.",
+    "Some feelings are difficult to put into words, so I hope these flowers help express just how much you mean to me.",
+    "I’m grateful for every moment, every memory and every kindness you have shared."
+  ]
+};
+
+let variationIndex = 0;
+let currentSettings = null;
+
+function makeMessages() {
+
+  const occasion = document.getElementById("occasion").value;
+  const recipient = document.getElementById("recipient").value;
+  const tone = document.getElementById("tone").value;
+  const flower = document.getElementById("flower").value;
+
+  if (!occasion || !recipient || !tone || !flower) {
+    alert("Please choose an occasion, recipient, tone and flower.");
+    return;
+  }
+
+  currentSettings = { occasion, recipient, tone, flower };
+
+  const openerList = occasionOpeners[occasion];
+  const endingList = toneEndings[tone];
+
+  const opener = openerList[variationIndex % openerList.length];
+  const ending = endingList[variationIndex % endingList.length];
+
+  const flowerName = flowerNames[flower];
+  const meaning = flowerMeanings[flower];
+  const recipientName = recipientNames[recipient];
+
+  const shortMessage =
+    `${opener}, ${recipientName}. ${ending}`;
+
+  const mediumMessage =
+    `${opener}, ${recipientName}. I chose ${flowerName.toLowerCase()} flowers because they symbolize ${meaning}. ${ending}`;
+
+  const longMessage =
+    `${opener}, ${recipientName}. I wanted to send something meaningful, and ${flowerName.toLowerCase()} flowers felt perfect because they represent ${meaning}. ` +
+    `${ending} I hope this little gesture reminds you how much you are appreciated and how special this moment is.`;
+
+  document.getElementById("resultTitle").textContent =
+    `${flowerName} Message Ideas`;
+
+  document.getElementById("resultSubtitle").textContent =
+    `${flowerName} · ${document.getElementById("tone").options[document.getElementById("tone").selectedIndex].text} tone`;
+
+  document.getElementById("shortMessage").textContent =
+    shortMessage;
+
+  document.getElementById("mediumMessage").textContent =
+    mediumMessage;
+
+  document.getElementById("longMessage").textContent =
+    longMessage;
+
+  document.getElementById("placeholder").style.display = "none";
+
+  document.getElementById("resultCard").classList.add("show");
+}
+
+
+document.getElementById("generateMessage").addEventListener("click", () => {
+  variationIndex = 0;
+  makeMessages();
+});
+
+
+document.getElementById("regenerate").addEventListener("click", () => {
+  if (!currentSettings) return;
+
+  variationIndex++;
+  makeMessages();
+});
+
+
+document.querySelectorAll(".copy-button").forEach(button => {
+
+  button.addEventListener("click", async () => {
+
+    const target = button.dataset.copy;
+    const text = document.getElementById(target).textContent;
+
+    await navigator.clipboard.writeText(text);
+
+    const original = button.textContent;
+
+    button.textContent = "Copied ✓";
+
+    setTimeout(() => {
+      button.textContent = original;
+    }, 1600);
+
+  });
+
+});
+
+
+document.getElementById("reset").addEventListener("click", () => {
+
+  document.getElementById("occasion").value = "";
+  document.getElementById("recipient").value = "";
+  document.getElementById("tone").value = "";
+  document.getElementById("flower").value = "";
+
+  document.getElementById("resultCard").classList.remove("show");
+
+  document.getElementById("placeholder").style.display = "grid";
+
+  currentSettings = null;
+  variationIndex = 0;
+
+});
+
+
+const menuButton = document.getElementById("menuButton");
+const menu = document.getElementById("menu");
+
+menuButton.addEventListener("click", () => {
+  menu.classList.toggle("open");
+});
+</script>
+
+</body>
+</html>
