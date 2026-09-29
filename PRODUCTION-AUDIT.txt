@@ -1,0 +1,14 @@
+LEOFLORA PRODUCTION AUDIT
+========================================
+
+HTML pages: 32
+Sitemap pages: 31
+Broken references: 0
+Missing titles: 0
+Missing descriptions: 1
+Missing flower WebP images: 0
+Duplicate titles: 0
+
+MISSING META DESCRIPTIONS
+-------------------------
+404.html
